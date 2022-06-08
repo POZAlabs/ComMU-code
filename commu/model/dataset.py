@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from conmu.preprocessor.encoder.event_tokens import TOKEN_OFFSET
+from commu.preprocessor.encoder.event_tokens import TOKEN_OFFSET
 
 
 class BaseVocab:

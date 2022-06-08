@@ -12,10 +12,10 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.nn.parallel import DistributedDataParallel as DDP
 
-from conmu.model.config_helper import get_default_cfg_training
-from conmu.model.dataset import ConMUDataset
-from conmu.model.exp_utils import logging_config
-from conmu.model.model import MemTransformerLM
+from commu.model.config_helper import get_default_cfg_training
+from commu.model.dataset import ConMUDataset
+from commu.model.exp_utils import logging_config
+from commu.model.model import MemTransformerLM
 
 @contextlib.contextmanager
 def sync_workers(args):

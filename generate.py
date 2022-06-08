@@ -9,14 +9,14 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from conmu.preprocessor.encoder import MetaEncoder, EventSequenceEncoder, encoder_utils
-from conmu.preprocessor.encoder.event_tokens import TOKEN_OFFSET
-from conmu.preprocessor.utils import sync_key_augment
-from conmu.preprocessor.utils import constants
-from conmu.preprocessor.utils.container import MidiInfo, MidiMeta
-from conmu.model.config_helper import get_default_cfg_inference, get_default_cfg_training
-from conmu.model.dataset import BaseVocab
-from conmu.model.model import MemTransformerLM
+from commu.preprocessor.encoder import MetaEncoder, EventSequenceEncoder, encoder_utils
+from commu.preprocessor.encoder.event_tokens import TOKEN_OFFSET
+from commu.preprocessor.utils import sync_key_augment
+from commu.preprocessor.utils import constants
+from commu.preprocessor.utils.container import MidiInfo, MidiMeta
+from commu.model.config_helper import get_default_cfg_inference, get_default_cfg_training
+from commu.model.dataset import BaseVocab
+from commu.model.model import MemTransformerLM
 
 
 def _map_chord2token(chord_progression: List, numerator: int, denominator: int) -> Tuple:

@@ -2,7 +2,7 @@ import argparse
 from multiprocessing import cpu_count
 from pathlib import Path
 
-from conmu.preprocessor import PreprocessPipeline
+from commu.preprocessor import PreprocessPipeline
 
 def get_root_parser() -> argparse.ArgumentParser:
     root_parser = argparse.ArgumentParser("dataset preprocessing", add_help=True)
