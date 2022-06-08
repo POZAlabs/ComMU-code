@@ -68,7 +68,7 @@ python3 generate.py \
 --genre newage \
 --min_velocity 60 \
 --max_velocity 80 \
---track_category main_melody \
+--track_role main_melody \
 --rhythm standard \
 --chord_progression Am-Am-Am-Am-Am-Am-Am-Am-G-G-G-G-G-G-G-G-F-F-F-F-F-F-F-F-E-E-E-E-E-E-E-E-Am-Am-Am-Am-Am-Am-Am-Am-G-G-G-G-G-G-G-G-F-F-F-F-F-F-F-F-E-E-E-E-E-E-E-E \
 --num_generate 3

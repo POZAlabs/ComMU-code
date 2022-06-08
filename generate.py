@@ -66,17 +66,17 @@ def decode_event_sequence(
         index: int,
         args: argparse.Namespace,
 ):
-    track_category = args.track_category
+    track_role = args.track_role
     event_sequence = generation_result[num_meta + 1:]
     inst = args.inst
     pitch_range = args.pitch_range
     output_dir = Path(output_dir).joinpath(
-            f"{track_category}_{inst}_{pitch_range}")
+            f"{track_role}_{inst}_{pitch_range}")
     output_dir.mkdir(exist_ok=True, parents=True)
     decoder = EventSequenceEncoder()
     decoder.decode(
         output_path=Path(output_dir).joinpath(
-            f"{track_category}_{inst}_{pitch_range}_{index:03d}.mid"),
+            f"{track_role}_{inst}_{pitch_range}_{index:03d}.mid"),
         midi_info=MidiInfo(*meta, event_seq=event_sequence)
     )
 
@@ -101,7 +101,7 @@ def parse_args():
     parser.add_argument("--min_velocity", type=int, choices=range(1, 128))
     parser.add_argument("--max_velocity", type=int, choices=range(1, 128))
     parser.add_argument(
-        "--track_category", type=str, choices=list(constants.TRACK_CATEGORY_MAP.keys())
+        "--track_role", type=str, choices=list(constants.TRACK_ROLE_MAP.keys())
     )
     parser.add_argument(
         "--rhythm", type=str, default="standard", choices=list(constants.RHYTHM_MAP.keys())

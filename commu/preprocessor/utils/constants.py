@@ -161,7 +161,7 @@ GENRE_MAP = {
     "cinematic": 1,
 }
 
-TRACK_CATEGORY_MAP = {
+TRACK_ROLE_MAP = {
     "main_melody": 0,
     "sub_melody": 1,
     "accompaniment": 2,

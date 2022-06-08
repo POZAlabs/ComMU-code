@@ -322,7 +322,7 @@ class TOKEN_OFFSET(enum.Enum):
     INST = 641
     GENRE = 650
     VELOCITY = 653
-    TRACK_CATE = 719
+    TRACK_ROLE = 719
     RHYTHM = 726
     REMI_META_OFFSET = 138
     META_CC_OFFSET = 7

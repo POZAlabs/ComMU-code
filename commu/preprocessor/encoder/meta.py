@@ -17,7 +17,7 @@ DEFAULT_ENCODING_MAPS = {
     "pitch_range": constants.PITCH_RANGE_MAP,
     "inst": constants.INST_MAP,
     "genre": constants.GENRE_MAP,
-    "track_category": constants.TRACK_CATEGORY_MAP,
+    "track_role": constants.TRACK_ROLE_MAP,
     "rhythm": constants.RHYTHM_MAP,
 }
 ATTR_ALIAS = {
@@ -43,7 +43,7 @@ class Unknown(AliasMixin, int, enum.Enum):
     INST = TOKEN_OFFSET.INST.value
     GENRE = TOKEN_OFFSET.GENRE.value
     VELOCITY = TOKEN_OFFSET.VELOCITY.value
-    TRACK_CATEGORY = TOKEN_OFFSET.TRACK_CATE.value
+    TRACK_ROLE = TOKEN_OFFSET.TRACK_ROLE.value
     RHYTHM = TOKEN_OFFSET.RHYTHM.value
 
 
@@ -58,7 +58,7 @@ class Offset(AliasMixin, int, enum.Enum):
     INST = TOKEN_OFFSET.INST.value + 1
     GENRE = TOKEN_OFFSET.GENRE.value + 1
     VELOCITY = TOKEN_OFFSET.VELOCITY.value + 1
-    TRACK_CATEGORY = TOKEN_OFFSET.TRACK_CATE.value + 1
+    TRACK_ROLE = TOKEN_OFFSET.TRACK_ROLE.value + 1
     RHYTHM = TOKEN_OFFSET.RHYTHM.value + 1
 
 
@@ -210,11 +210,11 @@ def encode_max_velocity(velocity: Union[int, str]):
 @register_encoder
 @add_offset
 @encode_unknown()
-def encode_track_category(track_category: str, encoding_map: Dict[str, int]) -> int:
+def encode_track_role(track_role: str, encoding_map: Dict[str, int]) -> int:
     try:
-        return encoding_map[track_category]
+        return encoding_map[track_role]
     except KeyError:
-        raise UnprocessableMidiError(f"track category KeyError: {track_category}")
+        raise UnprocessableMidiError(f"track role KeyError: {track_role}")
 
 
 @register_encoder
