@@ -82,7 +82,7 @@ def decode_event_sequence(
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="ConMU Transformer Inference")
+    parser = argparse.ArgumentParser(description="ComMU Transformer Inference")
 
     parser.add_argument("--checkpoint_dir", type=str)
     parser.add_argument("--output_dir", type=str, required=True)

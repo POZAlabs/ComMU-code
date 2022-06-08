@@ -15,7 +15,7 @@ class BaseVocab:
         return TOKEN_OFFSET.VOCAB_SIZE.value
 
 
-class ConMUDataset:
+class ComMUDataset:
     def __init__(self, data_dir, cfg):
         """Load the music corpus
         Args:

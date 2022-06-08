@@ -13,7 +13,7 @@ import torch.optim as optim
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 from commu.model.config_helper import get_default_cfg_training
-from commu.model.dataset import ConMUDataset
+from commu.model.dataset import ComMUDataset
 from commu.model.exp_utils import logging_config
 from commu.model.model import MemTransformerLM
 
@@ -388,7 +388,7 @@ torch.cuda.manual_seed_all(seed)
 # Load data
 ###############################################################################
 logging.info("Loading data")
-dataset = ConMUDataset(args.data_dir, cfg)
+dataset = ComMUDataset(args.data_dir, cfg)
 vocab = dataset.vocab
 
 local_seed = cfg.TRAIN.seed + args.local_rank * 1000
