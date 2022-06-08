@@ -1,4 +1,4 @@
-# ComMU (A Dataset for Combinatorial Music Generation)
+# ComMU: Dataset for Combinatorial Music Generation
 
 - [Paper on arXiv](https://paper_page)
 - [Demo Page](https://pozalabs.github.io/ComMU/)
