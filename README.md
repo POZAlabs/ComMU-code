@@ -13,6 +13,8 @@ pip install -r requirements.txt
 ```
 ### Download the Data
 1. download csv with meta information outside the root directory
+- csv file consists of meta information of each midi file
+- min/max velocity value is not contained for being calculated from the raw midi file
 2. download midifiles in subdirectory named 'raw'
 ```
 .
