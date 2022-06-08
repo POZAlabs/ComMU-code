@@ -18,7 +18,7 @@ pip install -r requirements.txt
 2. download midifiles in subdirectory named 'raw'
 ```
 .
-├── meta_info.csv
+├── commu_meta.csv
 └── root
     └── raw
         └── midifiles(.mid)
@@ -26,7 +26,7 @@ pip install -r requirements.txt
 3. After successful preprocessing, project tree would like be this,
 ```
 .
-├── meta_info.csv
+├── commu_meta.csv
 └── root
     ├── train
     │   ├── raw
@@ -48,7 +48,7 @@ pip install -r requirements.txt
 
 ## Preprocessing
 ```
-python3 preprocess.py --root_dir /root --csv_path /meta_info.csv
+python3 preprocess.py --root_dir /root --csv_path /commu_meta.csv
 ```
 
 ## Training
