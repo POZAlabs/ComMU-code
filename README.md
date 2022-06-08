@@ -1,8 +1,8 @@
-# ConMU (논문 이름)
+# ComMU (A Dataset for Combinatorial Music Generation)
 
 - [Paper on arXiv](https://paper_page)
-- [Demo Page](https://demo_page)
-- [Dataset](https://dataset)
+- [Demo Page](https://pozalabs.github.io/ComMU/)
+- [Dataset](https://github.com/POZAlabs/ComMU-code/tree/master/dataset)
 
 ## Getting Started
 ### Setup
