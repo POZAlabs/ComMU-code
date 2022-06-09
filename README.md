@@ -75,3 +75,6 @@ python3 generate.py \
 --chord_progression Am-Am-Am-Am-Am-Am-Am-Am-G-G-G-G-G-G-G-G-F-F-F-F-F-F-F-F-E-E-E-E-E-E-E-E-Am-Am-Am-Am-Am-Am-Am-Am-G-G-G-G-G-G-G-G-F-F-F-F-F-F-F-F-E-E-E-E-E-E-E-E \
 --num_generate 3
 ```
+
+## License
+The license of ComMU dataset and code is under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
