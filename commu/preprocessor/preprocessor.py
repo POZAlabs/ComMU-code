@@ -13,8 +13,6 @@ import numpy as np
 import pandas as pd
 import parmap
 
-import splitfolders
-
 from . import augment
 from .utils import sync_key_augment
 from .utils.exceptions import UnprocessableMidiError

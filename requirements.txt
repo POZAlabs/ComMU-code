@@ -22,7 +22,6 @@ PyYAML==6.0
 requests==2.27.1
 scipy==1.8.1
 six==1.16.0
-split-folders==0.5.1
 --find-links https://download.pytorch.org/whl/torch_stable.html
 torch==1.7.1+cu110
 torchvision==0.8.2+cu110
