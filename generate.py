@@ -251,7 +251,7 @@ def main(inference_cfg, args: argparse.Namespace):
                                 next_tokens = int(chord_token.pop(0))
                                 seq.append(next_tokens)
                                 continue
-                        # in case the chord progression change whitin a bar
+                        # in case the chord progression change within a bar
                         else:
                             if (
                                     seq[-2] == TOKEN_OFFSET.BAR.value

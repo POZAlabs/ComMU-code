@@ -130,7 +130,14 @@ class Preprocessor:
         default_sub_dir = get_sub_dir(root_dir, split=None)
         fetched_samples = pd.read_csv(self.csv_path,
                                       converters={"chord_progressions": literal_eval})
-        splitfolders.ratio(root_dir, root_dir, seed=1337, ratio=(0.9, 0.1), move=True)
+
+        # csv 칼럼으로부터 train/valid 비율 추출
+        split_series = fetched_samples["split_data"]
+        split_ratio = split_series.value_counts(normalize=True)
+        train_ratio = round(split_ratio['train'], 2)
+        valid_ratio = 1 - train_ratio
+
+        splitfolders.ratio(root_dir, root_dir, seed=1337, ratio=(train_ratio, valid_ratio), move=True)
 
         for empty_dir in fields(default_sub_dir):
             if empty_dir.name in ("encode_npy",):
@@ -197,7 +204,6 @@ class Preprocessor:
             encode_tmp_dir: Union[str, Path],
     ):
         idx, sample_infos_chunk = idx_sample_infos_chunk
-
         copied_sample_infos_chunk = copy.deepcopy(list(sample_infos_chunk))
         parent_sample_ids_to_info = {
             sample_info["id"]: sample_info for sample_info in copied_sample_infos_chunk
@@ -230,21 +236,28 @@ class Preprocessor:
                 augmented_midi_path = sample_id_to_path[copied_sample_info["id"]]
                 copied_sample_info = copy.deepcopy(parent_sample_ids_to_info[parent_sample_id])
                 copied_sample_info["bpm"] = int(bpm)
-                key_origin = copied_sample_info["audio_key"] + copied_sample_info["chord_type"] in ["cmajor", "aminor"]
+                # key_origin = copied_sample_info["audio_key"] + copied_sample_info["chord_type"] in ["cmajor", "aminor"]
+                # key_origin 값 수정
+                key_origin = copied_sample_info["audio_key"] in ["cmajor", "aminor"]
+
                 if not key_origin:
                     continue
-
                 try:
                     copied_sample_info["chord_progressions"] = sync_key_augment(
                         copied_sample_info["chord_progressions"][0],
                         audio_key.replace("minor", "").replace("major", ""),
-                        copied_sample_info["audio_key"],
+                        copied_sample_info["audio_key"][0], # audio_key 값 앞쪽으로 할당
                     )
                 except IndexError:
                     print(f"chord progression info is unknown: {augmented_midi_path}")
                     continue
                 copied_sample_info["audio_key"] = audio_key
                 copied_sample_info["rhythm"] = copied_sample_info.get("sample_rhythm")
+                # is_incomplete_measure column 추가
+                if copied_sample_info["num_measures"]%4==0:
+                    copied_sample_info["is_incomplete_measure"] = True
+                else:
+                    copied_sample_info["is_incomplete_measure"] = False
 
                 midi_path = sample_id_to_path.get(copied_sample_info["id"])
                 if midi_path is None:
