@@ -131,14 +131,6 @@ class Preprocessor:
         fetched_samples = pd.read_csv(self.csv_path,
                                       converters={"chord_progressions": literal_eval})
 
-        # csv 칼럼으로부터 train/valid 비율 추출
-        split_series = fetched_samples["split_data"]
-        split_ratio = split_series.value_counts(normalize=True)
-        train_ratio = round(split_ratio['train'], 2)
-        valid_ratio = 1 - train_ratio
-
-        splitfolders.ratio(root_dir, root_dir, seed=1337, ratio=(train_ratio, valid_ratio), move=True)
-
         for empty_dir in fields(default_sub_dir):
             if empty_dir.name in ("encode_npy",):
                 continue

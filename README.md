@@ -18,35 +18,37 @@ and additional document and dataset are showed below.
     pip install -r requirements.txt
     ```
 ### Download the Data
-1. download csv with meta information outside the root directory
+1. download csv with meta information and zipped raw midi files.
    - csv file consists of meta information of each midi file.
-2. unzip midifiles(`commu_midi.tar`) in root directory, and change the subdirectory name to 'raw'.
+2. unzip midifiles(`commu_midi.tar`).
     ```
     $ cd ComMU-Code
-    $ mkdir /dataset/root/
-    $ tar -xvf /dataset/commu_midi.tar -C /dataset/root
-    $ mv /dataset/root/commu_midi /dataset/root/raw
+    $ tar -xvf /dataset/commu_midi.tar -C /dataset/
     ```
     and if the project tree looks like this, it is ready for preprocessing. 
     ```
     .
     ├── commu_meta.csv
-    └── root
-        └── raw
-            └── midifiles(.mid)
+    └── commu_midi
+        └── train
+            └── raw
+                └── midifiles(.mid)
+        └── val
+            └── raw
+                └── midifiles(.mid)
     ``` 
 
 ## Preprocessing
 - ComMU dataset can be preprocessed by specifying the root directory and csv file path containing metadata.
     ```
-    $ python3 preprocess.py --root_dir /dataset/root --csv_path /dataset/commu_meta.csv
+    $ python3 preprocess.py --root_dir /dataset/commu_mid --csv_path /dataset/commu_meta.csv
     ```
 
 - After successful preprocessing, project tree would be like this,
     ```
     .
     ├── commu_meta.csv
-    └── root
+    └── commu_midi
         ├── train
         │   ├── raw
         │   ├── augmented_tmp
@@ -74,7 +76,7 @@ and additional document and dataset are showed below.
 
 ## Training
 ```
-$ python3 -m torch.distributed.launch --nproc_per_node=4 ./train.py --data_dir /dataset/root/output_npy --work_dir /working_direcoty
+$ python3 -m torch.distributed.launch --nproc_per_node=4 ./train.py --data_dir /dataset/commu_midi/output_npy --work_dir /working_direcoty
 ```
 
 ## Generating
