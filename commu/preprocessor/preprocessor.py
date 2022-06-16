@@ -279,7 +279,7 @@ class Preprocessor:
     def _preprocess_midi(
             self, sample_info: Dict[str, Any], midi_path: Union[str, Path]
     ) -> Optional[EncodingOutput]:
-        midi_meta = self.meta_parser.parse(meta_dict=sample_info, midi_path=midi_path)
+        midi_meta = self.meta_parser.parse(meta_dict=sample_info)
         try:
             encoded_meta: List[Union[int, str]] = self.meta_encoder.encode(midi_meta)
         except UnprocessableMidiError as e:
