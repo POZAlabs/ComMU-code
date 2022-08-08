@@ -41,7 +41,7 @@ and additional document and dataset are showed below.
 ## Preprocessing
 - ComMU dataset can be preprocessed by specifying the root directory and csv file path containing metadata.
     ```
-    $ python3 preprocess.py --root_dir /dataset/commu_mid --csv_path /dataset/commu_meta.csv
+    $ python3 preprocess.py --root_dir ./dataset/commu_midi --csv_path ./dataset/commu_meta.csv
     ```
 
 - After successful preprocessing, project tree would be like this,
@@ -76,15 +76,15 @@ and additional document and dataset are showed below.
 
 ## Training
 ```
-$ python3 -m torch.distributed.launch --nproc_per_node=4 ./train.py --data_dir /dataset/commu_midi/output_npy --work_dir /working_direcoty
+$ python3 -m torch.distributed.launch --nproc_per_node=4 ./train.py --data_dir ./dataset/commu_midi/output_npy --work_dir {./working_direcoty}
 ```
 
 ## Generating
 - generation involves choice of metadata, regarding which type of music(midi file) we intend to generate. the example of command is showed below.
     ```
     $ python3 generate.py \
-    --checkpoint_dir /working_directory/checkpoint_best.pt \
-    --output_dir /output_dir \
+    --checkpoint_dir {./working_directory/checkpoint_best.pt} \
+    --output_dir {./output_dir} \
     --bpm 70 \
     --audio_key aminor \
     --time_signature 4/4 \
