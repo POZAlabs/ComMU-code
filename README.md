@@ -22,8 +22,8 @@ and additional document and dataset are showed below.
    - csv file consists of meta information of each midi file.
 2. unzip midifiles(`commu_midi.tar`).
     ```
-    $ cd ComMU-Code
-    $ tar -xvf /dataset/commu_midi.tar -C /dataset/
+    $ cd ComMU-code
+    $ tar -xvf ./dataset/commu_midi.tar -C ./dataset/
     ```
     and if the project tree looks like this, it is ready for preprocessing. 
     ```
