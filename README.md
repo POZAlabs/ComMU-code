@@ -100,5 +100,4 @@ $ python3 -m torch.distributed.launch --nproc_per_node=4 ./train.py --data_dir .
     --num_generate 3
     ```
 ## License
-
-ComMU dataset is released under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). It is provided primarily for research purposes and is prohibited to be used for commercial purposes.
+ComMU dataset is released under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0). It is provided primarily for research purposes and is prohibited to be used for commercial purposes.
