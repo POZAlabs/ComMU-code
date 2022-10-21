@@ -361,6 +361,7 @@ def detect_chord(chord_progression, beats_per_bar):
     chord_name = []
     for bar_idx, bar in enumerate(split_by_bar):
         for c_idx, chord in enumerate(bar):
+            chord = chord.lower()
             if c_idx == 0 or chord != chord_name[-1]:
                 chord_idx.append(bar_idx + c_idx / chords_per_bar)
                 chord_name.append(chord)
