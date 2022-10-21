@@ -20,16 +20,20 @@ def normalize_chord_progression(chord_progression: str) -> list[str]:
 class PreprocessTask:
     def __init__(self):
         self.input_data = None
+        self.midi_meta = None
+
+    def get_meta_info_length(self):
+        return len(self.midi_meta.__fields__)
 
     def normalize_input_data(self, input_data: dict):
         input_data["chord_progression"] = normalize_chord_progression(input_data["chord_progression"])
         self.input_data = TransXlInputData(**input_data)
 
     def preprocess(self) -> List[int]:
-        midi_meta = parse_meta(**self.input_data.dict())
+        self.midi_meta = parse_meta(**self.input_data.dict())
         meta_encoder = MetaEncoder()
         encoded_meta = encode_meta(
-            meta_encoder=meta_encoder, midi_meta=midi_meta
+            meta_encoder=meta_encoder, midi_meta=self.midi_meta
         )
         return encoded_meta
 
