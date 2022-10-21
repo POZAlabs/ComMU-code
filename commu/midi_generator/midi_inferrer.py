@@ -1,4 +1,3 @@
-import logging
 import math
 from typing import Tuple, List
 
@@ -7,6 +6,7 @@ import torch
 import torch.nn.functional as F
 import yacs.config
 
+from logger import logger
 from commu.midi_generator.container import TransXlInputData
 from commu.model.model import MemTransformerLM
 from commu.preprocessor.encoder import TOKEN_OFFSET
@@ -172,8 +172,8 @@ class TeacherForceTask:
                 f"num_chord: {num_chord} vs {self.chord_length} \n" "error in chord length"
             )
         else:
-            logging.info(f"correct_length: {num_bars}")
-            logging.info(seq)
+            logger.info(f"correct_length: {num_bars}")
+            logger.info(seq)
 
 
 class InferenceTask:
@@ -224,8 +224,7 @@ class InferenceTask:
             # Compute softmax
             probs = F.softmax(logits, dim=-1)
 
-        if self.inference_cfg.INPUT.exclude_bos_token:
-            probs = F.pad(probs, [1, 0])
+        probs = F.pad(probs, [1, 0])
         return probs
 
     def apply_sampling(self, probs, wrong_tokens):
@@ -294,7 +293,7 @@ class InferenceTask:
             try:
                 token = self.infer_token(probs)
             except RuntimeError as e:
-                logging.error(f"Sampling Error: {e}")
+                logger.error(f"Sampling Error: {e}")
                 seq = None
                 break
 
@@ -323,7 +322,7 @@ class InferenceTask:
         try:
             teacher.validate_teacher_forced_sequence(seq)
         except Exception as error_message:
-            logging.error(error_message)
+            logger.error(error_message)
             seq = None
         return seq
 
@@ -349,13 +348,13 @@ class InferenceTask:
         sequences = []
         while idx != self.input_data.num_generate:
             with torch.no_grad():
-                logging.info("Generating the idx: " + str(idx + 1))
+                logger.info("Generating the idx: " + str(idx + 1))
                 seq, mems = self.init_seq_and_mems(encoded_meta, num_conditional_tokens)
                 seq = self.generate_sequence(seq, mems)
                 if seq is None:
                     continue
                 if not self.validate_generated_sequence(seq):
-                    logging.error("Empty sequence generated")
+                    logger.error("Empty sequence generated")
                     continue
             sequences.append(seq)
             idx += 1
