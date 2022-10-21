@@ -384,7 +384,6 @@ def word_to_event(words, word2event):
 def write_midi(
     midi_info,
     word2event,
-    output_path,
     duration_bins,
     beats_per_bar,
 ):
@@ -494,4 +493,4 @@ def write_midi(
         for c in chords:
             midi.markers.append(miditoolkit.midi.containers.Marker(text=c[1], time=c[0]))
 
-    midi.dump(output_path)
+    return midi

@@ -70,7 +70,6 @@ class EventSequenceEncoder:
 
     def decode(
         self,
-        output_path,
         midi_info,
     ):
         time_sig_word = midi_info.time_signature
@@ -88,10 +87,11 @@ class EventSequenceEncoder:
             dtype=int,
         )
 
-        encoder_utils.write_midi(
+        decoded_midi = encoder_utils.write_midi(
             midi_info,
             self.word2event,
-            output_path,
             duration_bins=duration_bins,
             beats_per_bar=beats_per_bar,
         )
+
+        return decoded_midi
