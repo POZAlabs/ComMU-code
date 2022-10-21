@@ -1,10 +1,10 @@
 import torch
 
 from commu.midi_generator.container import ModelArguments
-from model_initializer import ModelInitializeTask
-from info_preprocessor import PreprocessTask
-from midi_inferrer import InferenceTask
-from sequence_postprocessor import PostprocessTask
+from commu.midi_generator.model_initializer import ModelInitializeTask
+from commu.midi_generator.info_preprocessor import PreprocessTask
+from commu.midi_generator.midi_inferrer import InferenceTask
+from commu.midi_generator.sequence_postprocessor import PostprocessTask
 
 
 class MidiGenerationPipeline:
