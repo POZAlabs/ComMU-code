@@ -34,31 +34,32 @@ class TeacherForceTask:
 
     def check_first_position(self, seq):
         """
-        못갖춘 마디가 아닌 상태에서 bar token 이후 토큰인지 확인
+        check if it's a token following a bar token
         """
         return self.incomplete_filled and seq[-1] == TOKEN_OFFSET.BAR.value
 
     def check_remnant_chord(self):
         """
-        teacher force 필요한 코드 소진 하였는지 확인, 다 소진 하였다면 False
+        check if there any more chords to write
+        if not, return False
         """
         return bool(len(self.chord_token) * len(self.chord_position))
 
     def check_length_fit(self):
         """
-        한마디에 코드 하나만 들어가는지 확인, chord 개수 == bar 개수 일치 여부
+        check if one chord per bar needed
         """
         return self.chord_length == int(self.input_data.num_measures // 4 * 4)
 
     def check_position_fit(self, seq):
         """
-        코드 정보가 들어올 차례인지 즉 bar token, position 1/128 token 이 직전 token 인지 확인
+        check if a chord token needs to be filled next
         """
         return seq[-2] == TOKEN_OFFSET.BAR.value and seq[-1] == TOKEN_OFFSET.POSITION.value
 
     def check_one_chord_per_bar_case(self, seq):
         """
-        한마디에 코드 하나만 들어가는 case 확인
+        case: one chord per bar
         """
         return (
             self.check_remnant_chord()
@@ -69,9 +70,7 @@ class TeacherForceTask:
 
     def check_mul_chord_per_bar_case(self, seq):
         """
-        마디 중간에 코드 있는 case 확인
-        is_first_position_chord: bar token 이후 삽입될 코드인 case
-        is_inter_position_chord: 마디 중간에 삽입될 코드인 case
+        case: multiple chords per bar
         """
         is_first_position_chord = (
             self.check_remnant_chord()
@@ -92,8 +91,7 @@ class TeacherForceTask:
 
     def check_chord_position_passed(self, token):
         """
-        다음 코드는 마디 중간에 나타날 코드이고
-        position이 지나쳐버리거나 다음 마디가 나오면 True
+        in case a generated token skipped necessary position
         """
         if not self.check_remnant_chord():
             return False
@@ -105,7 +103,7 @@ class TeacherForceTask:
 
     def check_wrong_chord_token_generated(self, token):
         """
-        코드 token은 전부 티쳐포싱을 통해서만 추가되어야함
+        all chord tokens should be teacher forced
         """
         return TOKEN_OFFSET.CHORD_START.value <= token <= TOKEN_OFFSET.CHORD_END.value
 
@@ -117,16 +115,11 @@ class TeacherForceTask:
 
     def teach_first_position(self) -> None:
         """
-        마디 시작 마다 코드 추가를 강제하므로 1/128 position을 teacher force
+        teach 1/128 position right after a bar token
         """
         self.next_tokens_forced.append(int(TOKEN_OFFSET.POSITION.value))
 
     def teach_chord_token(self):
-        """
-        코드 토큰 강제할당
-        강제할당할 토큰을 저장해둔 chord_token에서 가져와 next_torken_forced에 넣음
-        강제할당 완료 예정이므로 wrong_tokens 초기화
-        """
         next_chord_tokens = self.chord_token.pop(0)
         self.next_tokens_forced.append(next_chord_tokens)
         self.chord_position.pop(0)
@@ -269,27 +262,27 @@ class InferenceTask:
             probs = self.calc_probs(logits)
             probs = self.apply_sampling(probs, teacher.wrong_tokens)
 
-            # 코드 진행 teacher forcing
-            # incomplete인 경우 두번째 Bar Token 이후부터 갖춘마디와 같은 방식으로 적용
+            # teacher forcing
+            # in case with incomplete measure, trigger a flag after second bar token
             if not teacher.incomplete_filled:
                 teacher.incomplete_filled = True if seq.count(TOKEN_OFFSET.BAR.value) > 1 else False
 
-            # bar position 뒤에 position 1/128 강제할당
+            # forcefully assign position 1/128 right after bar token
             if teacher.check_first_position(seq):
                 teacher.teach_first_position()
                 continue
 
-            # 코드 진행 코드 수가 생성 마디수와 같은 경우
+            # in case there is one chord per bar
             if teacher.check_one_chord_per_bar_case(seq):
                 teacher.teach_chord_token()
                 continue
 
-            # 코드 진행이 마디 내에서 바뀌는 경우
+            # in case the chord changes within a bar
             if teacher.check_mul_chord_per_bar_case(seq):
                 teacher.teach_chord_token()
                 continue
 
-            # 토큰 생성 후 토큰이 잘못 되었는지 확인하여 티쳐포싱 진행
+            # teacher forcing followed by token inference so that we can check if the wrong token was generated
             try:
                 token = self.infer_token(probs)
             except RuntimeError as e:
@@ -297,22 +290,22 @@ class InferenceTask:
                 seq = None
                 break
 
-            # 생성 토큰이 티쳐포싱 되어야할 코드 Position 지나친 경우
+            # generated token skipped necessary position
             if teacher.check_chord_position_passed(token):
                 teacher.teach_chord_position()
                 continue
 
-            # 티쳐포싱으로만 입력되어야 할 코드 토큰이 중간에 생성된 경우
+            # wrong chord token generated
             if teacher.check_wrong_chord_token_generated(token):
                 teacher.teach_wrong_chord_token(token)
                 continue
 
-            # 코드 진행 입력이 다 되지 않았는데 EOS 생성된 경우
+            # eos generated but we got more chords to write
             if teacher.check_wrong_eos_generated(token):
                 teacher.teach_remnant_chord()
                 continue
 
-            # 마지막 마디 생성하는 상황에서 다음 마디 bar token 생성된 경우
+            # bar token generated but num measures exceed
             if teacher.check_wrong_bar_token_generated(token):
                 teacher.teach_eos()
                 continue
