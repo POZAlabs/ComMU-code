@@ -24,10 +24,12 @@ class TransXlInputData(MidiMeta):
     temperature: float
     chord_progression: list[str]
 
-    @validator("num_measures")
-    def validate_num_measures(self, value: int, values: Dict[str, Any]) -> int:
-        expected_result = (value - (value % 4)) * Fraction(values.get("time_signature")) * 8
-        result = len(values.get("chord_progression"))
+    @validator("chord_progression")
+    def validate_chord_progression_length(cls, value: list[str], values: Dict[str, Any]) -> list[str]:
+        num_measures = values.get("num_measures")
+        time_signature = values.get("time_signature")
+        expected_result = (num_measures - (num_measures % 4)) * Fraction(time_signature) * 8
+        result = len(value)
         if expected_result != result:
             raise ValueError("num_measures not matched with chord progression length")
         return value
