@@ -19,5 +19,5 @@ class MidiGenerationPipeline:
             device=self.device
         )
         self.preprocess_task = PreprocessTask()
-        self.inference_task = InferenceTask()
+        self.inference_task = InferenceTask(self.device)
         self.postprocess_task = PostprocessTask()
