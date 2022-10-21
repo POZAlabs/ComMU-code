@@ -21,15 +21,15 @@ class MidiInfo:
     event_seq: List[int]
 
 class MidiMeta(BaseModel):
-    bpm: Union[int, str]
+    bpm: int
     audio_key: str
     time_signature: str
     pitch_range: str
-    num_measures: Union[float, str]
+    num_measures: float
     inst: str
     genre: str
-    min_velocity: Union[int, str]
-    max_velocity: Union[int, str]
+    min_velocity: int
+    max_velocity: int
     track_role: str
     rhythm: str
 
