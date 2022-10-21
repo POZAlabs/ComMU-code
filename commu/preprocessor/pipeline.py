@@ -1,9 +1,9 @@
-import logging
 import time
 from multiprocessing import cpu_count
 from pathlib import Path
 from typing import Union
 
+from logger import logger
 from .encoder import EventSequenceEncoder, MetaEncoder
 from .parser import MetaParser
 from .preprocessor import Preprocessor
@@ -28,12 +28,12 @@ class PreprocessPipeline:
             event_sequence_encoder=event_sequence_encoder,
             csv_path=csv_path,
         )
-        logging.info(f"Initialized preprocessor")
-        logging.info("Start preprocessing")
+        logger.info(f"Initialized preprocessor")
+        logger.info("Start preprocessing")
         start_time = time.perf_counter()
         preprocessor.preprocess(
             root_dir=root_dir,
             num_cores=num_cores,
         )
         end_time = time.perf_counter()
-        logging.info(f"Finished preprocessing in {end_time - start_time:.3f}s")
+        logger.info(f"Finished preprocessing in {end_time - start_time:.3f}s")

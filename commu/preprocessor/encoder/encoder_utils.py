@@ -361,6 +361,7 @@ def detect_chord(chord_progression, beats_per_bar):
     chord_name = []
     for bar_idx, bar in enumerate(split_by_bar):
         for c_idx, chord in enumerate(bar):
+            chord = chord.lower()
             if c_idx == 0 or chord != chord_name[-1]:
                 chord_idx.append(bar_idx + c_idx / chords_per_bar)
                 chord_name.append(chord)
@@ -384,7 +385,6 @@ def word_to_event(words, word2event):
 def write_midi(
     midi_info,
     word2event,
-    output_path,
     duration_bins,
     beats_per_bar,
 ):
@@ -494,4 +494,4 @@ def write_midi(
         for c in chords:
             midi.markers.append(miditoolkit.midi.containers.Marker(text=c[1], time=c[0]))
 
-    midi.dump(output_path)
+    return midi

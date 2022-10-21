@@ -309,7 +309,7 @@ class TOKEN_OFFSET(enum.Enum):
     EOS = 1
     BAR = 2
     PITCH = 3
-    NOTE_VEL = 131
+    NOTE_VELOCITY = 131
     CHORD_START = 195
     CHORD_END = 303
     NOTE_DURATION = 304

@@ -1,6 +1,5 @@
 import argparse
 import contextlib
-import logging
 import math
 import os
 import time
@@ -12,6 +11,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.nn.parallel import DistributedDataParallel as DDP
 
+from logger import logger
 from commu.model.config_helper import get_default_cfg_training
 from commu.model.dataset import ComMUDataset
 from commu.model.exp_utils import logging_config
@@ -49,7 +49,7 @@ def save_checkpoint(
 
     with sync_workers(args) as rank:
         path = os.path.join(args.work_dir, name)
-        logging.info(f"Saving checkpoint to {path}")
+        logger.info(f"Saving checkpoint to {path}")
         if rank == 0:
             torch.save(checkpoint, path)
 
@@ -177,7 +177,7 @@ def train():
             log_grad_norm /= cfg.TRAIN.log_interval * num_gpus
             if args.local_rank == 0:
                 elapsed = time.time() - log_start_time
-                logging.info(
+                logger.info(
                     "Train Step {}/{}, lr={:f}, tokens/s={:.1f},"
                     " nll={:.4f}, ppl={:.2f}, grad norm={}, ".format(
                         train_step,
@@ -215,7 +215,7 @@ def train():
             val_nll = val_total_nll / (val_token_num / 10000.0)
 
             if args.local_rank == 0:
-                logging.info(
+                logger.info(
                     "Eval step {}, time={}s, val nll={}, val ppl={},".format(
                         train_step,
                         time.time() - eval_start_time,
@@ -272,7 +272,7 @@ def train():
                 test_token_num, test_nll = calculate_test_nll_during_training(test_iter)
 
                 if args.local_rank == 0:
-                    logging.info(
+                    logger.info(
                         "Test step {}, time={}s, test nll={}, test ppl={}, #evaluated tokens={}".format(
                             train_step,
                             time.time() - test_start_time,
@@ -283,8 +283,8 @@ def train():
                     )
 
         if train_step == cfg.TRAIN.max_step:
-            logging.info("-" * 100)
-            logging.info("End of training")
+            logger.info("-" * 100)
+            logger.info("End of training")
             break
 
 
@@ -387,7 +387,7 @@ torch.cuda.manual_seed_all(seed)
 ###############################################################################
 # Load data
 ###############################################################################
-logging.info("Loading data")
+logger.info("Loading data")
 dataset = ComMUDataset(args.data_dir, cfg)
 vocab = dataset.vocab
 
@@ -421,7 +421,7 @@ test_iter = dataset.eval_iterator(
 # Build the model
 ###############################################################################
 
-logging.info("Build the model")
+logger.info("Build the model")
 
 assert cfg.MODEL.units % cfg.MODEL.num_heads == 0
 model = MemTransformerLM(cfg, vocab)
@@ -472,16 +472,16 @@ model = DDP(
     find_unused_parameters=False,
 )
 
-logging.info("=" * 100)
-logging.info(args)
-logging.info("=" * 100)
-logging.info("#total params = {}".format(args.n_all_param))
-logging.info("#non emb params in generator = {}".format(args.n_nonemb_param_gen))
+logger.info("=" * 100)
+logger.info(args)
+logger.info("=" * 100)
+logger.info("#total params = {}".format(args.n_all_param))
+logger.info("#non emb params in generator = {}".format(args.n_nonemb_param_gen))
 
 ###############################################################################
 # Training code
 ###############################################################################
-logging.info("Start training")
+logger.info("Start training")
 
 if __name__ == "__main__":
     train()
@@ -505,10 +505,10 @@ if __name__ == "__main__":
     torch.distributed.all_reduce(test_total_nll_pt)
     test_token_num = test_token_num_pt.item()
     test_nll = test_total_nll_pt.item() / (test_token_num / 10000.0)
-    logging.info("=" * 100)
-    logging.info(
+    logger.info("=" * 100)
+    logger.info(
         "| End of training | test nll {:5.2f} | test ppl {:9.3f}".format(
             test_nll, math.exp(test_nll)
         )
     )
-    logging.info("=" * 100)
+    logger.info("=" * 100)
