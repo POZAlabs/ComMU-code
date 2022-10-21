@@ -19,7 +19,6 @@ class ModelInitializeTask:
 
     def initialize_inference_config(self) -> yacs.config.CfgNode:
         inference_cfg = get_default_cfg_inference()
-        inference_cfg.merge_from_file(self.model_args.inference_config)
         inference_cfg.freeze()
         return inference_cfg
 
@@ -34,29 +33,9 @@ class ModelInitializeTask:
             training_cfg_fp = model_parent / "config.yml"
         return model_fp, training_cfg_fp
 
-    def initialize_training_cfg(self, config_path: Path) -> yacs.config.CfgNode:
+    def initialize_training_cfg(self) -> yacs.config.CfgNode:
         cfg = get_default_cfg_training()
-        # The following try to merge the configurations from yaml file,
-        # and since we have "", which is integrated as None and can not be read by yacs,
-        # we have the following block "try: except:" to read from list rather than merge from file.
-        try:
-            cfg.merge_from_file(config_path)
-        except Exception as e:
-            print("*" * 100)
-            print(
-                "Note, if you are loading an old config.yml file which includes None inside,\n"
-                " please change it to a string 'None' to make sure you can do training_cfg.merge_from_file.\n"
-                "e.g. training_cfg.DISCRIMINATOR.type, training_cfg.TRAIN.pad_type "
-                "and training_cfg.TRAIN.load_from_previous.\n"
-                "and please note DISCRIMINATOR.temperature is DISCRIMINATOR.beta_max\n"
-            )
-            print("*" * 100)
-            raise e
-
         cfg.defrost()
-        cfg.DISCRIMINATOR.type = (
-            "Null"  # cnn for cnn distriminator or Null for no discriminator or 'bert' for BERT
-        )
         cfg.MODEL.same_length = True  # Needed for same_length =True during evaluation
         cfg.freeze()
         return cfg
@@ -73,6 +52,6 @@ class ModelInitializeTask:
 
     def execute(self):
         model_fp, training_cfg_fp = self.load_checkpoint_fp()
-        training_cfg = self.initialize_training_cfg(training_cfg_fp)
+        training_cfg = self.initialize_training_cfg()
         model = self.initialize_model(training_cfg, model_fp)
         return model
