@@ -12,7 +12,6 @@ from commu.preprocessor.utils.container import MidiMeta
 
 
 class ModelArguments(BaseModel):
-    inference_config: str
     checkpoint_dir: str
 
 
