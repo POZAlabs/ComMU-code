@@ -1,7 +1,6 @@
-import copy
 import os
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Union
 
 import miditoolkit
 import numpy as np
@@ -10,35 +9,12 @@ import pretty_midi
 
 from .utils.constants import (
     BPM_INTERVAL,
-    CHORD_TRACK_NAME,
-    DEFAULT_NUM_BEATS,
     KEY_NUM_MAP,
-    KeySwitchVelocity,
     NUM_BPM_AUGMENT,
     NUM_KEY_AUGMENT,
     MAJOR_KEY,
     MINOR_KEY,
 )
-
-def drop_keyswitch_note(midi_path: str) -> None:
-    midi = miditoolkit.MidiFile(midi_path)
-    new_midi = miditoolkit.MidiFile()
-    for track in midi.instruments:
-        if track.name == CHORD_TRACK_NAME:
-            new_midi.instruments.append(track)
-        else:
-            new_track = copy.deepcopy(track)
-            new_track.notes = []
-            for note in track.notes:
-                if note.velocity == KeySwitchVelocity.DEFAULT:
-                    continue
-                else:
-                    new_track.notes.append(note)
-            new_midi.instruments.append(new_track)
-    new_midi.key_signature_changes = midi.key_signature_changes
-    new_midi.time_signature_changes = midi.time_signature_changes
-    new_midi.tempo_changes = midi.tempo_changes
-    new_midi.dump(midi_path)
 
 def get_avg_bpm(event_times: np.ndarray, tempo_infos: np.ndarray, end_time: float) -> int:
     def _normalize(_avg_bpm):
@@ -59,31 +35,8 @@ def get_avg_bpm(event_times: np.ndarray, tempo_infos: np.ndarray, end_time: floa
 def augment_by_key(midi_path: str, augmented_tmp_dir: str, key_change: int) -> Union[Path, str]:
     midi = miditoolkit.MidiFile(midi_path)
     midi_id = Path(midi_path).stem
-    pitch_track_idx = []
-    for idx, instrument in enumerate(midi.instruments):
-        if instrument.name != CHORD_TRACK_NAME:
-            pitch_track_idx.append(idx)
-        else:
-            chord_track_idx = idx
-    pitch_track_notes = [midi.instruments[i].notes for i in pitch_track_idx]
+    pitch_track_notes = [midi.instruments[0].notes]
 
-    try:
-        pitch_track_start = pitch_track_notes[0][0].start
-    except IndexError:
-        print(f"all notes are in key switch velocity: {midi_path}")
-        return None
-    try:
-        chord_track_start = midi.instruments[chord_track_idx].notes[0].start
-    except UnboundLocalError:
-        print(f"no chord track exists: {midi_path}")
-        return None
-    if pitch_track_start < chord_track_start:
-        time_signature = midi.time_signature_changes[-1]
-        coordination = time_signature.numerator / time_signature.denominator
-        ticks_per_measure = int(midi.ticks_per_beat * DEFAULT_NUM_BEATS * coordination)
-        track_offset = chord_track_start - ticks_per_measure
-    else:
-        track_offset = chord_track_start
     for idx, key in enumerate(midi.key_signature_changes):
         origin_key = int(key.key_number)
         if origin_key < MINOR_KEY[0]:
@@ -108,10 +61,6 @@ def augment_by_key(midi_path: str, augmented_tmp_dir: str, key_change: int) -> U
     for track in pitch_track_notes:
         for note in track:
             note.pitch = note.pitch + key_change
-            note.start = note.start - track_offset
-            note.end = note.end - track_offset
-
-    midi.instruments.pop(chord_track_idx)
     try:
         midi.dump(os.path.join(augmented_tmp_dir, midi_id + f"_{new_key}.mid"))
     except ValueError as e:
@@ -142,7 +91,6 @@ def augment_data_map(
     augmented_tmp_dir: str,
 ) -> None:
     for midi_path in midi_list:
-        drop_keyswitch_note(midi_path)
         for key_change in range(-NUM_KEY_AUGMENT, NUM_KEY_AUGMENT):
             augment_tmp_midi_pth = augment_by_key(midi_path, augmented_tmp_dir, key_change)
             if augment_tmp_midi_pth is not None:
