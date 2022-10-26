@@ -245,9 +245,9 @@ class Preprocessor:
                 copied_sample_info["rhythm"] = copied_sample_info.get("sample_rhythm")
                 # is_incomplete_measure column 추가
                 if copied_sample_info["num_measures"]%4==0:
-                    copied_sample_info["is_incomplete_measure"] = True
-                else:
                     copied_sample_info["is_incomplete_measure"] = False
+                else:
+                    copied_sample_info["is_incomplete_measure"] = True
 
                 midi_path = sample_id_to_path.get(copied_sample_info["id"])
                 if midi_path is None:

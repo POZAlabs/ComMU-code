@@ -15,7 +15,7 @@ from ..utils.constants import (
 )
 
 NUM_VELOCITY_BINS = int(128 / VELOCITY_INTERVAL)
-DEFAULT_VELOCITY_BINS = np.linspace(0, 128, NUM_VELOCITY_BINS + 1, dtype=np.int)
+DEFAULT_VELOCITY_BINS = np.linspace(2, 127, NUM_VELOCITY_BINS, dtype=np.int)
 
 class Item(object):
     def __init__(self, name, start, end, velocity, pitch):
