@@ -13,7 +13,7 @@ def encode_meta(meta_encoder: MetaEncoder, midi_meta: MidiMeta) -> List[int]:
     return meta_encoder.encode(midi_meta)
 
 
-def normalize_chord_progression(chord_progression: str) -> list[str]:
+def normalize_chord_progression(chord_progression: str) -> List[str]:
     return chord_progression.split("-")
 
 
