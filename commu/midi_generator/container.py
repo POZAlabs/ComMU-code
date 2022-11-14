@@ -1,8 +1,7 @@
 import json
 from fractions import Fraction
 from pathlib import Path
-from typing import Dict, Any
-
+from typing import Dict, Any, List
 
 from pydantic import BaseModel, validator
 
@@ -21,10 +20,10 @@ class TransXlInputData(MidiMeta):
     num_generate: int
     top_k: int
     temperature: float
-    chord_progression: list[str]
+    chord_progression: List[str]
 
     @validator("chord_progression")
-    def validate_chord_progression_length(cls, value: list[str], values: Dict[str, Any]) -> list[str]:
+    def validate_chord_progression_length(cls, value: List[str], values: Dict[str, Any]) -> List[str]:
         num_measures = values.get("num_measures")
         time_signature = values.get("time_signature")
         expected_result = (num_measures - (num_measures % 4)) * Fraction(time_signature) * 8
