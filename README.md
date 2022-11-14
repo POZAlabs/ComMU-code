@@ -5,7 +5,7 @@
 This is the repository of ComMU : Dataset for Combinational Music Generation. It is composed of midi dataset, and codes involving training & generation utilizing the autoregressive music generation model. The dataset contains 11,144 MIDI samples written and created by professional composers.
 They consist of short note sequences(4,8,16 bar), and are organized into 12 different metadata. they are as follows: BPM, Genre, Key, Track-instrument, Track-role, Time signature, Pitch range, Number of Measures, Chord progression, Min Velocity, Max Velocity, Rhythm.
 and additional document and dataset are showed below.
-- [Paper](https://openreview.net/pdf?id=Jq3uTzLg9se) NeurIPS 2022 Datasets and Benchmarks Track
+- [Paper](https://openreview.net/pdf?id=Jq3uTzLg9se) NeurIPS 2022
 - [Demo Page](https://pozalabs.github.io/ComMU/)
 - [Dataset](https://github.com/POZAlabs/ComMU-code/tree/master/dataset)
 
