@@ -1,6 +1,7 @@
 # ComMU: Dataset for Combinatorial Music Generation
 
 ![](https://velog.velcdn.com/images/crosstar1228/post/0d2ed81f-06df-46fe-bfcb-8e5729eab6dc/image.png)
+![](https://github.com/POZAlabs/ComMU/blob/main/assets/img/figure_1.png)
 
 This is the repository of ComMU : Dataset for Combinational Music Generation. It is composed of midi dataset, and codes involving training & generation utilizing the autoregressive music generation model. The dataset contains 11,144 MIDI samples written and created by professional composers.
 They consist of short note sequences(4,8,16 bar), and are organized into 12 different metadata. they are as follows: BPM, Genre, Key, Track-instrument, Track-role, Time signature, Pitch range, Number of Measures, Chord progression, Min Velocity, Max Velocity, Rhythm.
