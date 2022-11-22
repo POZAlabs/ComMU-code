@@ -1,6 +1,5 @@
 # ComMU: Dataset for Combinatorial Music Generation
 
-![](https://velog.velcdn.com/images/crosstar1228/post/0d2ed81f-06df-46fe-bfcb-8e5729eab6dc/image.png)
 ![](https://github.com/POZAlabs/ComMU/blob/main/assets/img/figure_1.png)
 
 This is the repository of ComMU : Dataset for Combinational Music Generation. It is composed of midi dataset, and codes involving training & generation utilizing the autoregressive music generation model. The dataset contains 11,144 MIDI samples written and created by professional composers.
@@ -9,6 +8,8 @@ and additional document and dataset are showed below.
 - [Paper](https://openreview.net/pdf?id=Jq3uTzLg9se) (NeurIPS 2022)
 - [Demo Page](https://pozalabs.github.io/ComMU/)
 - [Dataset](https://github.com/POZAlabs/ComMU-code/tree/master/dataset)
+
+![](https://velog.velcdn.com/images/crosstar1228/post/0d2ed81f-06df-46fe-bfcb-8e5729eab6dc/image.png)
 
 ## Getting Started
 - Note : This Project requires python version `3.8.12`. Set the virtual environment if needed.
