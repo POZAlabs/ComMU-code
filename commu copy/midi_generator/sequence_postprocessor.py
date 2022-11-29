@@ -42,7 +42,6 @@ class PostprocessTask:
         decoded_midi = decoder.decode(
             midi_info=MidiInfo(*encoded_meta, event_seq=event_sequence),
         )
-
         return decoded_midi
 
     def execute(self, sequences: List[List[int]], meta_info_len: int) -> Path:
@@ -53,5 +52,4 @@ class PostprocessTask:
             )
             output_file_path = self.set_output_file_path(idx)
             decoded_midi.dump(output_file_path)
-
         return self.get_output_dir()

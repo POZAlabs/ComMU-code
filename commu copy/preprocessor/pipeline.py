@@ -35,5 +35,6 @@ class PreprocessPipeline:
             root_dir=root_dir,
             num_cores=num_cores,
         )
+        print("d")
         end_time = time.perf_counter()
         logger.info(f"Finished preprocessing in {end_time - start_time:.3f}s")

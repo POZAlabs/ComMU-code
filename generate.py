@@ -66,7 +66,7 @@ def main(model_args: argparse.Namespace, input_args: argparse.Namespace):
         inference_cfg=inference_cfg
     )
     sequences = pipeline.inference_task.execute(encoded_meta)
-
+    
     pipeline.postprocess_task(input_data=input_data)
     pipeline.postprocess_task.execute(
         sequences=sequences,

@@ -1,4 +1,4 @@
-certifi==2022.5.18.1
+certifi
 charset-normalizer==2.0.12
 cycler==0.11.0
 fonttools==4.33.3

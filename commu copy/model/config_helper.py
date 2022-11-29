@@ -18,8 +18,8 @@ def model(cfg):
 def train(cfg):
     # For training
     cfg.TRAIN = CN()
-    cfg.TRAIN.batch_size = 256
-    cfg.TRAIN.batch_chunk = 4
+    cfg.TRAIN.batch_size = 24
+    cfg.TRAIN.batch_chunk = 1
     cfg.TRAIN.tgt_length = 128
     cfg.TRAIN.mem_length = 1024
     cfg.TRAIN.seed = 1111
@@ -42,7 +42,7 @@ def init(cfg):
 
     # For evaluation
     cfg.EVALUATE = CN()
-    cfg.EVALUATE.batch_size = 10
+    cfg.EVALUATE.batch_size = 24
     cfg.EVALUATE.tgt_length = 128
     cfg.EVALUATE.mem_length = 2048
 

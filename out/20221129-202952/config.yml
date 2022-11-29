@@ -1,0 +1,30 @@
+EVALUATE:
+  batch_size: 10
+  mem_length: 2048
+  tgt_length: 128
+INITIALIZER:
+  base_init: 0.01
+  embed_init: 0.01
+MODEL:
+  attention_dropout: 0.1
+  clamp_len: -1
+  dropout: 0.1
+  inner_size: 1000
+  num_heads: 10
+  num_layers: 6
+  same_length: False
+  units: 500
+TRAIN:
+  batch_chunk: 4
+  batch_size: 256
+  clip: 1.0
+  eval_interval: 1000
+  log_interval: 100
+  lr: 0.004
+  lr_min: 0.0001
+  max_step: 20000
+  mem_length: 1024
+  seed: 1111
+  tgt_length: 128
+  warmup_step: 100
+  weight_decay: 0.0

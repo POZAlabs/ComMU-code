@@ -351,4 +351,5 @@ class InferenceTask:
                     continue
             sequences.append(seq)
             idx += 1
+
         return sequences

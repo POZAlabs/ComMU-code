@@ -66,6 +66,7 @@ class EventSequenceEncoder:
                     # you should handle it for your own purpose
                     print("OOV {}".format(e))
         words.append(TOKEN_OFFSET.EOS.value)  # eos token
+
         return np.array(words)
 
     def decode(
@@ -87,11 +88,14 @@ class EventSequenceEncoder:
             dtype=int,
         )
 
+        print("This is duration bins : ", duration_bins, "midi : ", midi_info, "event", self.word2event)
+
         decoded_midi = encoder_utils.write_midi(
             midi_info,
             self.word2event,
             duration_bins=duration_bins,
             beats_per_bar=beats_per_bar,
         )
+        print("decoded final", decoded_midi)
 
         return decoded_midi

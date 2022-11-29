@@ -389,10 +389,12 @@ def write_midi(
     beats_per_bar,
 ):
     events = word_to_event(midi_info.event_seq, word2event)
+    print("\n\n", events, "\n\n")
     # get downbeat and note (no time)
     temp_notes = []
     temp_chords = []
     for i in range(len(events) - 3):
+        print("this is len of events", events[i].name, events[i+1].name, events[i+2].name, events[i+3].name)
         if events[i].name == "Bar" and i > 0:
             temp_notes.append("Bar")
             temp_chords.append("Bar")
@@ -423,6 +425,7 @@ def write_midi(
     notes = []
     current_bar = 0
     for note in temp_notes:
+        
         if note == "Bar":
             current_bar += 1
         else:

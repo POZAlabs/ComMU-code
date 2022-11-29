@@ -9,7 +9,6 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 import torch.optim as optim
-from torch.nn.parallel import DistributedDataParallel as DDP
 
 from logger import logger
 from commu.model.config_helper import get_default_cfg_training
@@ -37,7 +36,7 @@ def save_checkpoint(
         name="checkpoint.pt",
 ):
     checkpoint = {
-        "model": model.module.state_dict(),
+        "model": model.state_dict(),
         "optimizer": optimizer.state_dict(),
         "train_step": train_step,
         "scheduler": scheduler.state_dict(),
@@ -47,11 +46,11 @@ def save_checkpoint(
 
     checkpoint["amp"] = None
 
-    with sync_workers(args) as rank:
-        path = os.path.join(args.work_dir, name)
-        logger.info(f"Saving checkpoint to {path}")
-        if rank == 0:
-            torch.save(checkpoint, path)
+    # with sync_workers(args) as rank:
+    path = os.path.join(args.work_dir, name)
+    logger.info(f"Saving checkpoint to {path}")
+    # if rank == 0:
+    torch.save(checkpoint, path)
 
 
 def parse_args():
@@ -75,10 +74,7 @@ def evaluate(eval_iter):
     # Turn on evaluation mode def disables dropout.
     model.eval()
 
-    if isinstance(model, DDP):
-        eval_model = model.module
-    else:
-        eval_model = model
+    eval_model = model
 
     eval_model.reset_length(
         tgt_len=cfg.EVALUATE.tgt_length, mem_len=cfg.EVALUATE.mem_length)
@@ -128,7 +124,7 @@ def train():
     for batch, (data, target, reset_mems, batch_token_num) in enumerate(
             train_real_iter
     ):
-        model.module.temperature = 1.0
+        model.temperature = 1.0
 
         model.zero_grad()
 
@@ -157,7 +153,7 @@ def train():
         log_token_num += int(batch_token_num)
 
         grad_norm = torch.nn.utils.clip_grad_norm_(
-            model.module.parameters(), cfg.TRAIN.clip
+            model.parameters(), cfg.TRAIN.clip
         )
 
         log_grad_norm += grad_norm
@@ -169,9 +165,9 @@ def train():
         scheduler.step()
 
         if train_step % cfg.TRAIN.log_interval == 0:
-            torch.distributed.all_reduce(log_train_loss)
-            torch.distributed.all_reduce(log_grad_norm)
-            torch.distributed.all_reduce(log_token_num)
+            # torch.distributed.all_reduce(log_train_loss)
+            # torch.distributed.all_reduce(log_grad_norm)
+            # torch.distributed.all_reduce(log_token_num)
 
             log_train_loss /= log_token_num
             log_grad_norm /= cfg.TRAIN.log_interval * num_gpus
@@ -206,8 +202,8 @@ def train():
             val_token_num_pt = torch.tensor(val_token_num).to(device)
             val_total_nll_pt = torch.tensor(val_total_nll / 10000.0).to(device)
 
-            torch.distributed.all_reduce(val_token_num_pt)
-            torch.distributed.all_reduce(val_total_nll_pt)
+            # torch.distributed.all_reduce(val_token_num_pt)
+            # torch.distributed.all_reduce(val_total_nll_pt)
 
             val_token_num = val_token_num_pt.item()
             val_total_nll = val_total_nll_pt.item()
@@ -261,8 +257,8 @@ def train():
                     )
                     test_token_num_pt = torch.tensor(test_token_num).to(device)
                     test_total_nll_pt = torch.tensor(test_total_nll / 10000.0).to(device)
-                    torch.distributed.all_reduce(test_token_num_pt)
-                    torch.distributed.all_reduce(test_total_nll_pt)
+                    # torch.distributed.all_reduce(test_token_num_pt)
+                    # torch.distributed.all_reduce(test_total_nll_pt)
 
                     test_token_num = test_token_num_pt.item()
                     test_nll = test_total_nll_pt.item() / (test_token_num / 10000.0)
@@ -355,13 +351,17 @@ def update_dropatt(m):
 
 
 args = parse_args()
+# Modify 2022 11 27
 cfg = get_default_cfg_training()
+
+
 torch.cuda.set_device(args.local_rank)
 device = torch.device("cuda", args.local_rank)
-torch.distributed.init_process_group(backend="nccl", init_method="env://")
+
+#torch.distributed.init_process_group(backend="nccl", init_method="env://")
 
 exp_time = torch.tensor(time.time(), dtype=torch.float64).to(device)
-torch.distributed.broadcast(exp_time, 0)
+#torch.distributed.broadcast(exp_time, 0)
 exp_time = float(exp_time.cpu().numpy())
 
 args.work_dir = os.path.join(
@@ -463,7 +463,7 @@ scheduler = optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
 
 train_step = 0
 best_val_nll = np.inf
-
+"""
 model = DDP(
     model,
     device_ids=[args.local_rank],
@@ -471,7 +471,7 @@ model = DDP(
     broadcast_buffers=False,
     find_unused_parameters=False,
 )
-
+"""
 logger.info("=" * 100)
 logger.info(args)
 logger.info("=" * 100)
@@ -501,8 +501,8 @@ if __name__ == "__main__":
     )
     test_token_num_pt = torch.tensor(test_token_num).to(device)
     test_total_nll_pt = torch.tensor(test_total_nll / 10000.0).to(device)
-    torch.distributed.all_reduce(test_token_num_pt)
-    torch.distributed.all_reduce(test_total_nll_pt)
+    # torch.distributed.all_reduce(test_token_num_pt)
+    # torch.distributed.all_reduce(test_total_nll_pt)
     test_token_num = test_token_num_pt.item()
     test_nll = test_total_nll_pt.item() / (test_token_num / 10000.0)
     logger.info("=" * 100)
