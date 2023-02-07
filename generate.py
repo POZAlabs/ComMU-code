@@ -51,7 +51,9 @@ def parse_args() -> Dict[str, argparse.ArgumentParser]:
 
 
 def main(model_args: argparse.Namespace, input_args: argparse.Namespace):
-    pipeline = MidiGenerationPipeline(vars(model_args))
+    pipeline = MidiGenerationPipeline()
+    pipeline.initialize_model(vars(model_args))
+    pipeline.initialize_generation()
 
     inference_cfg = pipeline.model_initialize_task.inference_cfg
     model = pipeline.model_initialize_task.execute()
