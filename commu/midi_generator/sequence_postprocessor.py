@@ -34,7 +34,7 @@ class PostprocessTask:
     def decode_event_sequence(
             self,
             generation_result: List[int],
-            num_meta: int
+            num_meta: int = 11
     ) -> MidiFile:
         encoded_meta = generation_result[1: num_meta + 1]
         event_sequence = generation_result[num_meta + 2:]
@@ -45,11 +45,10 @@ class PostprocessTask:
 
         return decoded_midi
 
-    def execute(self, sequences: List[List[int]], meta_info_len: int) -> Path:
+    def execute(self, sequences: List[List[int]]) -> Path:
         for idx, seq in enumerate(sequences):
             decoded_midi = self.decode_event_sequence(
                 generation_result=seq,
-                num_meta=meta_info_len,
             )
             output_file_path = self.set_output_file_path(idx)
             decoded_midi.dump(output_file_path)

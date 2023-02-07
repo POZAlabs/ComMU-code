@@ -56,9 +56,8 @@ def main(model_args: argparse.Namespace, input_args: argparse.Namespace):
     inference_cfg = pipeline.model_initialize_task.inference_cfg
     model = pipeline.model_initialize_task.execute()
 
-    encoded_meta = pipeline.preprocess_task.excecute(vars(input_args))
+    encoded_meta = pipeline.preprocess_task.execute(vars(input_args))
     input_data = pipeline.preprocess_task.input_data
-    meta_info_len = pipeline.preprocess_task.get_meta_info_length()
 
     pipeline.inference_task(
         model=model,
@@ -70,7 +69,6 @@ def main(model_args: argparse.Namespace, input_args: argparse.Namespace):
     pipeline.postprocess_task(input_data=input_data)
     pipeline.postprocess_task.execute(
         sequences=sequences,
-        meta_info_len=meta_info_len
     )
 
 

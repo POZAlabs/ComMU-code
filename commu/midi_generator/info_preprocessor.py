@@ -37,7 +37,7 @@ class PreprocessTask:
         )
         return encoded_meta
 
-    def excecute(self, input_data: dict) -> List[int]:
+    def execute(self, input_data: dict) -> List[int]:
         if self.input_data is None:
             self.normalize_input_data(input_data)
 
